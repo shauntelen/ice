@@ -1,164 +1,785 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Information</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Payroll System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+    --teal: #087f8c;
+    --teal-d: #066575;
+    --teal-light: #e6f5f6;
+    --line: #e0e9ed;
+    --soft: #f4f8fa;
+    --white: #ffffff;
+    --text: #263746;
+    --muted: #718096;
+    --danger: #dc3545;
+    --shadow: 0 5px 20px rgba(20,55,75,.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f3f7fa;
+    min-height: 100vh;
+    color: var(--text);
+}
+
+button,input,select {
+    font-family: inherit;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* LOGIN */
+
+#login {
+    max-width: 390px;
+    margin: 12vh auto;
+    background: white;
+    padding: 38px 32px;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(10,60,80,.12);
+    border-top: 5px solid var(--teal);
+}
+
+#login h2 {
+    margin: 0 0 30px;
+    color: var(--teal);
+    font-size: 25px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .5px;
+}
+
+#login label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    color: #153449;
+}
+
+#login input {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 6px 0 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f8fbfc;
+    outline: none;
+    transition: .2s;
+}
+
+#login input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(8,127,140,.12);
+}
+
+/* NAVIGATION */
+
+nav {
+    background: linear-gradient(110deg,#075b70,#087f8c,#1095a4);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 22px;
+    min-height: 66px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.12);
+    position: relative;
+    z-index: 60;
+}
+
+/* LOGO */
+
+nav img#logo {
+    height: 45px;
+    width: 45px;
+    min-width: 45px;
+    border-radius: 10px;
+    object-fit: contain;
+    background: white;
+    padding: 3px;
+    margin-right: 8px;
+}
+
+nav .logo {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    background: white;
+    color: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-right: 8px;
+}
+
+nav .brand {
+    font-weight: 800;
+    font-size: 18px;
+    margin-right: 25px;
+    letter-spacing: .2px;
+    white-space: nowrap;
+}
+
+nav .menu {
+    position: relative;
+}
+
+nav .menu>span {
+    display: block;
+    padding: 24px 13px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: .4px;
+    transition: .2s;
+}
+
+nav .menu>span:hover {
+    background: rgba(255,255,255,.15);
+}
+
+nav .menu .dd {
+    display: none;
+    position: absolute;
+    top: 66px;
+    left: 0;
+    background: white;
+    min-width: 230px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.14);
+    z-index: 100;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+nav .menu:hover .dd {
+    display: block;
+}
+
+nav .dd a {
+    display: block;
+    padding: 13px 17px;
+    color: #153449;
+    font-size: 13px;
+    transition: .2s;
+}
+
+nav .dd a:hover {
+    background: var(--teal-light);
+    color: var(--teal);
+    padding-left: 23px;
+}
+
+nav .sp {
+    flex: 1;
+}
+
+nav .ic {
+    background: none;
+    border: 0;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+}
+
+nav .ic:hover {
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+}
+
+nav .ic svg {
+    width: 21px;
+    height: 21px;
+    fill: white;
+}
+
+/* MAIN */
+
+main {
+    padding: 25px 28px;
+    max-width: 1600px;
+    margin: auto;
+}
+
+.panel {
+    background: white;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.panel>h2 {
+    margin: 0;
+    background: linear-gradient(110deg,#087383,#0e91a0);
+    color: white;
+    text-align: center;
+    padding: 22px 25px;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+/* TOOLBAR */
+
+.tb,.bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+}
+
+.tb {
+    justify-content: center;
+}
+
+.bar.c {
+    justify-content: center;
+}
+
+/* BUTTONS */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--teal-d);
+    padding: 9px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn:hover {
+    background: var(--teal-light);
+    border-color: var(--teal);
+    transform: translateY(-1px);
+}
+
+.btn.pri {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+}
+
+.btn.pri:hover {
+    background: var(--teal-d);
+}
+
+.btn.x {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.btn.gray {
+    color: #777;
+    background: #edf1f3;
+}
+
+.btn.sm {
+    padding: 6px 11px;
+    font-size: 12px;
+}
+
+.btn.ib {
+    padding: 7px 11px;
+}
+
+.btn.dl {
+    background: #edf2f4;
+}
+
+.addlink {
+    color: var(--teal-d);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+}
+
+.addlink .box1 {
+    border: 1px solid var(--line);
+    background: white;
+    padding: 7px 11px;
+    border-radius: 7px;
+}
+
+/* INPUTS */
+
+input,select {
+    border: 1px solid #d6e2e7;
+    border-radius: 7px;
+    padding: 10px 12px;
+    background: #f9fbfc;
+    color: var(--text);
+    outline: none;
+    transition: .2s;
+}
+
+input:focus,select:focus {
+    border-color: var(--teal);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(8,127,140,.09);
+}
+
+/* DATA TABLE */
+
+.dt {
+    padding: 8px 20px 15px;
+}
+
+.dthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    color: var(--teal);
+    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dthead select {
+    margin: 0 5px;
+    color: var(--teal-d);
+    font-weight: 600;
+}
+
+.dthead input {
+    margin-left: 6px;
+}
+
+.tw {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    min-width: 650px;
+}
+
+th {
+    background: #e9f4f6;
+    color: #176b79;
+    padding: 15px 12px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: .6px;
+    border-bottom: 2px solid #d4e6ea;
+}
+
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf1f3;
+    text-align: center;
+    font-size: 13px;
+}
+
+td.l {
+    text-align: left;
+}
+
+td.r {
+    text-align: right;
+}
+
+tr:hover td {
+    background: #f5fafb;
+}
+
+tr.empty td {
+    color: #777;
+    padding: 25px;
+}
+
+.dtfoot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 4px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pg button {
+    background: white;
+    border: 1px solid var(--line);
+    color: #667;
+    padding: 7px 11px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 2px;
+}
+
+.pg button.cur {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+}
+
+.pg button:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+.tot td {
+    font-weight: bold;
+    background: #e8f5f6;
+}
+
+/* TABS */
+
+.tabs {
+    display: flex;
+    gap: 5px;
+    padding: 12px 15px 0;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    background: #f9fbfc;
+}
+
+.tabs button {
+    background: #e7f1f3;
+    color: var(--teal-d);
+    border: 0;
+    padding: 17px 19px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 11px;
+    letter-spacing: .3px;
+    border-radius: 7px 7px 0 0;
+    transition: .2s;
+}
+
+.tabs button:hover {
+    background: #d6ebee;
+}
+
+.tabs button.on {
+    background: var(--teal);
+    color: white;
+    outline: none;
+}
+
+/* FORMS */
+
+.grid5 {
+    display: grid;
+    grid-template-columns: repeat(5,minmax(150px,1fr));
+    gap: 20px;
+    padding: 25px 22px;
+}
+
+.crow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+    gap: 17px 22px;
+    padding: 22px;
+    align-items: end;
+    max-width: 1100px;
+}
+
+.crow.inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 15px;
+}
+
+.crow.inline label {
+    display: inline;
+    margin-right: 6px;
+}
+
+.grid5 label,
+.crow label,
+.mform label,
+.lf label {
+    display: block;
+    color: #176b79;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.grid5 input,
+.grid5 select,
+.crow input,
+.crow select,
+.mform input,
+.mform select,
+.lf input {
+    width: 100%;
+    margin-top: 7px;
+}
+
+.crow.inline input,
+.crow.inline select {
+    width: auto;
+    margin: 0;
+}
+
+.box {
+    margin: 15px 20px;
+    border: 1px solid var(--line);
+    min-height: 240px;
+    background: white;
+    max-width: 1100px;
+    border-radius: 8px;
+}
+
+.photo img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 9px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.two {
+    display: grid;
+    grid-template-columns: minmax(260px,1fr) 2fr;
+    gap: 20px;
+    padding: 15px;
+}
+
+.lf {
+    padding: 10px;
+}
+
+.lf .btn {
+    margin-right: 6px;
+    margin-top: 12px;
+}
+
+/* MODAL */
+
+.ov {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,35,45,.55);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 7vh;
+    z-index: 100;
+    overflow: auto;
+    backdrop-filter: blur(3px);
+}
+
+.modal {
+    background: white;
+    border-radius: 13px;
+    min-width: 340px;
+    max-width: 92vw;
+    width: 420px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.2);
+    overflow: hidden;
+}
+
+.modal.wide {
+    width: 860px;
+}
+
+.modal h3 {
+    margin: 0;
+    padding: 20px 23px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 700;
+    font-size: 20px;
+    color: #153449;
+    background: #f7fafb;
+}
+
+.mform {
+    padding: 22px;
+    display: grid;
+    gap: 13px;
+}
+
+.mf {
+    display: flex;
+    gap: 9px;
+    justify-content: flex-end;
+    padding: 16px 22px;
+    border-top: 1px solid var(--line);
+    background: #fafcfd;
+}
+
+.mb {
+    padding: 0;
+}
+
+.hint {
+    padding: 10px 5px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.hide {
+    display: none!important;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px) {
+    nav {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 15px;
+    }
+
+    nav .brand {
+        margin-right: 10px;
+    }
+
+    nav .menu>span {
+        padding: 14px 9px;
+    }
+
+    nav .menu .dd {
+        top: 45px;
+    }
+
+    .grid5 {
+        grid-template-columns: repeat(3,minmax(140px,1fr));
+    }
+}
+
+@media(max-width:700px) {
+    main {
+        padding: 14px 10px;
+    }
+
+    nav {
+        gap: 3px;
+    }
+
+    nav .brand {
+        font-size: 15px;
+    }
+
+    nav .menu>span {
+        font-size: 10px;
+        padding: 12px 7px;
+    }
+
+    nav .menu .dd {
+        min-width: 190px;
+    }
+
+    .panel>h2 {
+        font-size: 17px;
+        padding: 18px;
+    }
+
+    .grid5 {
+        grid-template-columns: repeat(2,minmax(120px,1fr));
+        gap: 14px;
+        padding: 17px 12px;
+    }
+
+    .two {
+        grid-template-columns: 1fr;
+    }
+
+    .tabs button {
+        padding: 12px 10px;
+        font-size: 10px;
+    }
+
+    .dthead {
+        align-items: flex-start;
+    }
+
+    .modal {
+        min-width: 0;
+        width: 95%;
+    }
+}
+
+@media(max-width:420px) {
+    .grid5 {
+        grid-template-columns: 1fr;
+    }
+
+    #login {
+        margin: 7vh 15px;
+        padding: 28px 22px;
+    }
+
+    nav img#logo {
+        height: 38px;
+        width: 38px;
+        min-width: 38px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- NAVIGATION -->
-  <div class="navbar">
-    <div class="system-title">ADMIN PAYROLL SYSTEM</div>
-    <nav class="menu">
-      <a href="#" class="active">EMPLOYEES</a>
-      <a href="#">LOANS</a>
-      <a href="#">PAYROLL</a>
-      <a href="#">REPORTS</a>
-    </nav>
-  </div>
+<div id="loaderr" style="display:none;background:#fde8e8;color:#900;padding:14px;margin:16px;border-radius:6px"></div>
 
-  <div class="title">EMPLOYEE INFORMATION</div>
+<!-- LOGIN -->
 
-  <!-- TOP BUTTONS -->
-  <div class="top-buttons">
-    <button type="button" onclick="newEmployee()">⊞ New</button>
-    <button type="button" onclick="cancelEmployee()">⊘ Cancel</button>
-    <button type="button" onclick="viewEmployee()">👁 View</button>
-  </div>
+<div id="login">
+    <h2>ADMIN PAYROLL SYSTEM</h2>
 
-  <!-- TABS -->
-  <div class="tabs">
-    <div class="tab active" onclick="openTab(event, 'personal')">PERSONAL INFORMATION</div>
-    <div class="tab" onclick="openTab(event, 'emergency')">EMERGENCY CONTACT</div>
-    <div class="tab" onclick="openTab(event, 'dependent')">DEPENDENT</div>
-    <div class="tab" onclick="openTab(event, 'education')">EDUCATIONAL BACKGROUND</div>
-    <div class="tab" onclick="openTab(event, 'reference')">CHARACTER REFERENCE</div>
-    <div class="tab" onclick="openTab(event, 'position')">EMPLOYEE POSITION</div>
-  </div>
+    <label>Email</label>
+    <input id="lemail" type="email">
 
-  <!-- FORM -->
-  <form id="employeeForm">
-    <div class="form-container">
+    <label>Password</label>
+    <input id="lpass" type="password">
 
-      <!-- PERSONAL INFORMATION -->
-      <div id="personal" class="tab-content active">
-        <div class="form-grid">
-          <div class="form-group"><label>Employee Number *</label><input type="text" name="employee_number" required></div>
-          <div class="form-group"><label>Portal Password</label><input type="password" name="password"></div>
-          <div class="form-group"><label>Last Name *</label><input type="text" name="last_name" required></div>
-          <div class="form-group"><label>First Name *</label><input type="text" name="first_name" required></div>
-          <div class="form-group"><label>Middle Name</label><input type="text" name="middle_name"></div>
-          <div class="form-group"><label>Gender</label>
-            <select name="gender"><option value="">Select</option><option>Male</option><option>Female</option></select>
-          </div>
-          <div class="form-group"><label>Email Address *</label><input type="email" name="email" required></div>
-          <div class="form-group"><label>Civil Status</label>
-            <select name="civil_status"><option value="">Select</option><option>Single</option><option>Married</option><option>Widowed</option><option>Separated</option></select>
-          </div>
-          <div class="form-group"><label>Nationality</label><input type="text" name="nationality"></div>
-          <div class="form-group"><label>Religion</label><input type="text" name="religion"></div>
-          <div class="form-group"><label>Birth Date</label><input type="date" name="birth_date"></div>
-          <div class="form-group"><label>Permanent Address</label><input type="text" name="permanent_address"></div>
-          <div class="form-group"><label>Present Address</label><input type="text" name="present_address"></div>
-          <div class="form-group"><label>Contact</label><input type="text" name="contact"></div>
-          <div class="form-group"><label>SSS No</label><input type="text" name="sss"></div>
-          <div class="form-group"><label>PhilHealth No</label><input type="text" name="philhealth"></div>
-          <div class="form-group"><label>Pag-IBIG No</label><input type="text" name="pagibig"></div>
-          <div class="form-group"><label>ATM No</label><input type="text" name="atm"></div>
-          <div class="form-group"><label>TIN</label><input type="text" name="tin"></div>
-        </div>
-      </div>
+    <button class="btn pri" id="lbtn" style="width:100%">Login</button>
 
-      <!-- EMERGENCY CONTACT -->
-      <div id="emergency" class="tab-content">
-        <div class="add-form">
-          <div class="form-group"><label>Name</label><input type="text" id="emergency_name"></div>
-          <div class="form-group"><label>Relationship</label><input type="text" id="emergency_relationship"></div>
-          <div class="form-group"><label>Address</label><input type="text" id="emergency_address"></div>
-          <div class="form-group"><label>Contact</label><input type="text" id="emergency_contact"></div>
-          <button type="button" class="add-btn" onclick="addEmergency()">Add</button>
-        </div>
-        <table class="data-table"><thead><tr><th>Name</th><th>Relationship</th><th>Address</th><th>Contact</th><th>Action</th></tr></thead><tbody id="emergencyTable"></tbody></table>
-        <p class="empty" id="emergencyEmpty">No records yet.</p>
-      </div>
+    <div id="lerr" style="color:#b00020;margin-top:10px;font-size:13px"></div>
+</div>
 
-      <!-- DEPENDENT -->
-      <div id="dependent" class="tab-content">
-        <div class="add-form">
-          <div class="form-group"><label>Name</label><input type="text" id="dependent_name"></div>
-          <div class="form-group"><label>Birth Date</label><input type="date" id="dependent_birth"></div>
-          <div class="form-group"><label>Relationship</label><input type="text" id="dependent_relationship"></div>
-          <button type="button" class="add-btn" onclick="addDependent()">Add</button>
-        </div>
-        <table class="data-table"><thead><tr><th>Name</th><th>Birth Date</th><th>Relationship</th><th>Action</th></tr></thead><tbody id="dependentTable"></tbody></table>
-        <p class="empty" id="dependentEmpty">No records yet.</p>
-      </div>
+<!-- APPLICATION -->
 
-      <!-- EDUCATION -->
-      <div id="education" class="tab-content">
-        <div class="add-form">
-          <div class="form-group"><label>School</label><input type="text" id="school"></div>
-          <div class="form-group"><label>Address</label><input type="text" id="school_address"></div>
-          <div class="form-group"><label>S.Y.</label><input type="text" id="school_year" placeholder="e.g. 2020-2024"></div>
-          <div class="form-group"><label>Level</label>
-            <select id="education_level"><option>Primary</option><option>Secondary</option><option>College</option><option>Vocational</option><option>Graduate</option></select>
-          </div>
-          <button type="button" class="add-btn" onclick="addEducation()">Add</button>
-        </div>
-        <table class="data-table"><thead><tr><th>School</th><th>Address</th><th>S.Y.</th><th>Level</th><th>Action</th></tr></thead><tbody id="educationTable"></tbody></table>
-        <p class="empty" id="educationEmpty">No records yet.</p>
-      </div>
+<div id="app" class="hide">
 
-      <!-- CHARACTER REFERENCE -->
-      <div id="reference" class="tab-content">
-        <div class="add-form">
-          <div class="form-group"><label>Name</label><input type="text" id="reference_name"></div>
-          <div class="form-group"><label>Occupation</label><input type="text" id="reference_occupation"></div>
-          <div class="form-group"><label>Address</label><input type="text" id="reference_address"></div>
-          <div class="form-group"><label>Contact</label><input type="text" id="reference_contact"></div>
-          <button type="button" class="add-btn" onclick="addReference()">Add</button>
-        </div>
-        <table class="data-table"><thead><tr><th>Name</th><th>Occupation</th><th>Address</th><th>Contact</th><th>Action</th></tr></thead><tbody id="referenceTable"></tbody></table>
-        <p class="empty" id="referenceEmpty">No records yet.</p>
-      </div>
+    <nav id="nav"></nav>
 
-      <!-- EMPLOYEE POSITION -->
-      <div id="position" class="tab-content">
-        <div class="form-grid">
-          <div class="form-group"><label>Department</label>
-            <select name="department"><option value="">Select Department</option><option>CCTE</option><option>CCJE</option><option>CITHM</option><option>CELA</option><option>CBA</option><option>CON</option></select>
-          </div>
-          <div class="form-group"><label>Position</label>
-            <select name="position"><option value="">Select Position</option><option>Manager</option><option>Supervisor</option><option>Account Officer</option><option>Staff</option><option>Clerk</option></select>
-          </div>
-          <div class="form-group"><label>Start</label><input type="date" name="start_date"></div>
-          <div class="form-group"><label>End</label><input type="date" name="end_date"></div>
-          <div class="form-group"><label>Monthly</label><input type="number" name="monthly" id="monthly" step="0.01"></div>
-          <div class="form-group"><label>Daily</label><input type="number" name="daily" id="daily" step="0.01"></div>
-          <div class="form-group"><label>Hourly</label><input type="number" name="hourly" id="hourly" step="0.01"></div>
-        </div>
-      </div>
+    <main id="view"></main>
 
-    </div>
+</div>
 
-    <div class="save-area">
-      <button type="button" class="save-btn" onclick="saveEmployee()">SAVE EMPLOYEE</button>
-    </div>
-  </form>
+<script src="main.js"></script>
 
-  <!-- VIEW MODAL -->
-  <div id="viewModal" class="modal hidden">
-    <div class="modal-box">
-      <h3>Employee Summary</h3>
-      <div id="viewContent"></div>
-      <button type="button" onclick="closeView()">Close</button>
-    </div>
-  </div>
-
-  <div id="toast" class="toast hidden"></div>
-
-  <script src="main.js"></script>
 </body>
 </html>
