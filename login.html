@@ -1,1 +1,496 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Payroll System | Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: white;
+}
+
+.login-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    background: white;
+}
+
+.login-left {
+    width: 55%;
+    background: white;
+    color: #087f8c;
+    padding: 45px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.brand img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.brand h2 {
+    font-size: 23px;
+    letter-spacing: 1px;
+    color: #087f8c;
+}
+
+.welcome {
+    max-width: 500px;
+}
+
+.welcome h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #087f8c;
+}
+
+.welcome p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #444141;
+}
+
+.footer {
+    font-size: 12px;
+    color: #888;
+}
+
+.login-right {
+    width: 45%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background: #3a3a3a;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.login-box h1 {
+    color: #087f8c;
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #424040;
+    margin-bottom: 35px;
+}
+
+.login-box form > label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.login-box input[type="email"],
+.password-box input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #d5dce3;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+.login-box input:focus {
+    border-color: #087f8c;
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 65px;
+}
+
+.password-box button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #087f8c;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 25px;
+    font-size: 13px;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #555;
+}
+
+.login-options a {
+    color: #087f8c;
+    text-decoration: none;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: #087f8c;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #066575;
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#message {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+}
+
+@media (max-width: 800px) {
+
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-left {
+        width: 100%;
+        min-height: 300px;
+        padding: 30px;
+    }
+
+    .brand img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .brand h2 {
+        font-size: 18px;
+    }
+
+    .welcome {
+        margin-top: 40px;
+    }
+
+    .welcome h1 {
+        font-size: 32px;
+    }
+
+    .welcome p {
+        font-size: 15px;
+    }
+
+    .footer {
+        margin-top: 35px;
+    }
+
+    .login-right {
+        width: 100%;
+        padding: 35px 20px;
+    }
+
+    .login-box {
+        padding: 30px 25px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-left">
+
+        <div class="brand">
+
+            <img src="1.png"
+                 alt="Payroll Logo"
+                 onerror="this.style.display='none'">
+
+            <h2>ADMIN PAYROLL SYSTEM</h2>
+
+        </div>
+
+        <div class="welcome">
+
+            <h1>WELCOME BACK!</h1>
+
+            <p>
+                Manage your workforce with confidence.
+                Access your payroll dashboard and employee
+                information in one place.
+            </p>
+
+        </div>
+
+        <div class="footer">
+            © 2026 Admin Payroll System. All Rights Reserved.
+        </div>
+
+    </div>
+
+    <div class="login-right">
+
+        <div class="login-box">
+
+            <h1>Login</h1>
+
+            <p class="subtitle">
+                Please enter your account details.
+            </p>
+
+            <form id="loginForm">
+
+                <label>Email Address</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+                <label>Password</label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                    <button type="button" id="togglePassword">
+                        Show
+                    </button>
+
+                </div>
+
+                <div class="login-options">
+
+                    <label class="remember">
+
+                        <input type="checkbox" id="remember">
+
+                        Remember me
+
+                    </label>
+
+                    <a href="#" id="forgotPassword">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <button
+                    type="submit"
+                    id="loginBtn"
+                    class="login-btn"
+                >
+                    LOGIN
+                </button>
+
+                <p id="message"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "https://eohsvouxreyvwvuwbldi.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_da3qVatvbvKWOUfaZtHkAA_d2NvnboP";
+
+const sb = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const loginForm = document.getElementById("loginForm");
+const password = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const message = document.getElementById("message");
+const loginBtn = document.getElementById("loginBtn");
+
+togglePassword.addEventListener("click", function() {
+
+    if (password.type === "password") {
+
+        password.type = "text";
+        togglePassword.textContent = "Hide";
+
+    } else {
+
+        password.type = "password";
+        togglePassword.textContent = "Show";
+
+    }
+
+});
+
+loginForm.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    const passwordValue = password.value;
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = "LOGGING IN...";
+
+    message.style.color = "#555";
+    message.textContent = "Please wait...";
+
+    try {
+
+        const { data, error } = await sb.auth.signInWithPassword({
+
+            email: email,
+            password: passwordValue
+
+        });
+
+        if (error) {
+
+            message.style.color = "red";
+            message.textContent = error.message;
+
+            loginBtn.disabled = false;
+            loginBtn.textContent = "LOGIN";
+
+            return;
+
+        }
+
+        message.style.color = "green";
+        message.textContent = "Login successful!";
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = "Something went wrong. Please try again.";
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = "LOGIN";
+
+    }
+
+});
+
+document.getElementById("forgotPassword")
+.addEventListener("click", async function(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    if (email === "") {
+
+        message.style.color = "red";
+        message.textContent = "Please enter your email first.";
+
+        return;
+
+    }
+
+    try {
+
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+
+            redirectTo: window.location.origin + "/reset-password.html"
+
+        });
+
+        if (error) {
+
+            message.style.color = "red";
+            message.textContent = error.message;
+
+        } else {
+
+            message.style.color = "green";
+            message.textContent = "Password reset link sent to your email.";
+
+        }
+
+    } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = "Something went wrong. Please try again.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
